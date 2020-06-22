@@ -1,0 +1,4 @@
+1.) Get barebones syncing of text running via Peer.js and IndexedDB.
+2.) Get support for different filetypes.
+3.) Implement e2e encryption.
+4.) Give a sexy-ass material design UI.
