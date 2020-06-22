@@ -14,8 +14,8 @@ Lastly, the chat client is fully functioned, supporting text, audio, video, gifs
 This webapp is a project by Ajay Shanker Tripathi (who just wanted a good app for his family group chat and couldn't find one), and is 100% open source and released under BSD 3 Lisence.
 
 "
-दीप सिखा सम जुबति तन मन जनि होसि पतंग।
-भजहि राम तजि काम मद करहि सदा **सत्सङ्ग**॥
-Like flies to the tip of the flame, we're tempted by attractive glamours.
-O mind, drop such temptations, and constantly do **suthsung**.
+दीप सिखा सम जुबति तन मन जनि होसि पतंग।  
+भजहि राम तजि काम मद करहि सदा **सत्सङ्ग**॥  
+Like flies to the tip of the flame, we're tempted by attractive glamours.  
+O mind, drop such temptations, and constantly do **suthsung**.  
 " - Narad Rishi, the messenger of the Gods.
