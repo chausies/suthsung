@@ -5,6 +5,7 @@ bodyInput = document.querySelector('#body')
 form = document.querySelector('form')
 submitBtn = document.querySelector('form button')
 
+db = undefined
 
 window.onload = ->
   request = window.indexedDB.open('notes_db', 1)
