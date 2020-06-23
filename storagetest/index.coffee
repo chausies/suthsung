@@ -59,7 +59,6 @@ window.onload = ->
       # Clear the form, ready for adding the next entry
       titleInput.value = ''
       bodyInput.value = ''
-      console.log('asdf req success')
       return
 
     # Report on the success of the transaction completing, when everything
@@ -109,7 +108,7 @@ window.onload = ->
 
         deleteBtn = document.createElement('button')
         listItem.appendChild(deleteBtn)
-        deleteBtn.textContent('Delete')
+        deleteBtn.textContent = 'Delete'
 
         deleteBtn.onclick = deleteItem
 

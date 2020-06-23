@@ -68,7 +68,6 @@
         // Clear the form, ready for adding the next entry
         titleInput.value = '';
         bodyInput.value = '';
-        console.log('asdf req success');
       };
       // Report on the success of the transaction completing, when everything
       // is done
@@ -109,7 +108,7 @@
           listItem.setAttribute('data-node-id', v.id);
           deleteBtn = document.createElement('button');
           listItem.appendChild(deleteBtn);
-          deleteBtn.textContent('Delete');
+          deleteBtn.textContent = 'Delete';
           deleteBtn.onclick = deleteItem;
           cursor.continue();
         } else {
