@@ -16,6 +16,7 @@ This webapp is a project by Ajay Shanker Tripathi (who just wanted a good app fo
 "  
 दीप सिखा सम जुबति तन मन जनि होसि पतंग।  
 भजहि राम तजि काम मद करहि सदा **सत्सङ्ग**॥  
+
 Like flies to the tip of the flame, we're tempted by attractive glamours.  
 O mind, drop such temptations, and constantly do **suthsung**.  
-" - Narad Rishi, the messenger of the Gods.
+" - Naarad Rishi, the messenger of the Gods.
