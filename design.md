@@ -17,8 +17,9 @@ Alice's 256-bit `secret_id` will be `secret_id = bcrypt(HASH(password),
 HASH(username), 12)`. `session_id` is chosen by Alice (e.g. "Alice's Home
 Desktop"), taking care not to clash with any of her other `session_id`'s.
 
-Alice will generate her `public_key` and `secret_key` via
-[ED25519](https://ed25519.cr.yp.to/), using her `secret_id` to [seed the
+For a particular chat `room` with ID `room_id`, Alice will generate her
+`public_key` and `secret_key` via [ED25519](https://ed25519.cr.yp.to/),
+using `seed=HASH([secret_id, room_id])` to [seed the
 generation](https://www.npmjs.com/package/tweetnacl#naclsignkeypairfromseedseed).
 
 ## Start a Chat Room
