@@ -10,11 +10,11 @@ window.signin = ->
   signinFromForm = (e) ->
     # prevent normal submission behavior that refreshes page
     e.preventDefault()
-    usrnm = usernameInput.value
+    usrnm = usernameInput.value.toLowerCase()
     usernameInput.value = ''
     pswd = passwordInput.value
     passwordInput.value = ''
-    sesh = sessionInput.value
+    sesh = sessionInput.value.toLowerCase()
     sessionInput.value = ''
     keyPair = window.pswdUsrnmToKeyPair(pswd, usrnm)
     pub = nacl.util.encodeBase64(keyPair.publicKey)
