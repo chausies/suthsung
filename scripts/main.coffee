@@ -88,7 +88,7 @@ window.goToPage = ->
   else if not loc
     goTo = "list"
   else
-    goTo = "loc"
+    goTo = loc
   window.runPage(goTo)
 
 window.onload = ->
