@@ -75,20 +75,23 @@ window.runPage = (pageName, arg) ->
   document.getElementById("body").innerHTML = await window.pages[pageName]
   switch pageName
     when "signin" then window.signin()
-    when "list" then window.list()
     when "settings" then window.settings()
     when "room" then window.room(arg)
+    else
+      window.list()
+
 
 window.goToPage = ->
   # Go to correct page specified by url params
-  goTo = "signin"
   loc = window.getParam("loc")
   if not localStorage.getItem("account")
     goTo = "signin"
   else if not loc
     goTo = "list"
-  else
+  else if loc of ["signin", "settings", "room", "list"]
     goTo = loc
+  else
+    goTo = "list"
   window.runPage(goTo)
 
 window.onload = ->
