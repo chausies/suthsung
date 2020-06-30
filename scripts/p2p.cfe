@@ -1,0 +1,190 @@
+do ->
+  lastPeerId = null
+  peer = null
+  # own peer object
+  conn = null
+  recvIdInput = document.getElementById('receiver-id')
+  status = document.getElementById('status')
+  message = document.getElementById('message')
+  goButton = document.getElementById('goButton')
+  resetButton = document.getElementById('resetButton')
+  fadeButton = document.getElementById('fadeButton')
+  offButton = document.getElementById('offButton')
+  sendMessageBox = document.getElementById('sendMessageBox')
+  sendButton = document.getElementById('sendButton')
+  clearMsgsButton = document.getElementById('clearMsgsButton')
+  connectButton = document.getElementById('connect-button')
+  cueString = '<span class="cueMsg">Cue: </span>'
+
+  ###*
+  # Create the Peer object for our end of the connection.
+  #
+  # Sets up callbacks that handle any events related to our
+  # peer object.
+  ###
+
+  initialize = ->
+    # Create own peer object with connection to shared PeerJS server
+    peer = new Peer(null, debug: 2)
+    peer.on 'open', (id) ->
+      # Workaround for peer.reconnect deleting previous id
+      if peer.id == null
+        console.log 'Received null id from peer open'
+        peer.id = lastPeerId
+      else
+        lastPeerId = peer.id
+      console.log 'ID: ' + peer.id
+      return
+    peer.on 'connection', (c) ->
+      # Disallow incoming connections
+      c.on 'open', ->
+        c.send 'Sender does not accept incoming connections'
+        setTimeout (->
+          c.close()
+          return
+        ), 500
+        return
+      return
+    peer.on 'disconnected', ->
+      status.innerHTML = 'Connection lost. Please reconnect'
+      console.log 'Connection lost. Please reconnect'
+      # Workaround for peer.reconnect deleting previous id
+      peer.id = lastPeerId
+      peer._lastServerId = lastPeerId
+      peer.reconnect()
+      return
+    peer.on 'close', ->
+      conn = null
+      status.innerHTML = 'Connection destroyed. Please refresh'
+      console.log 'Connection destroyed'
+      return
+    peer.on 'error', (err) ->
+      console.log err
+      alert '' + err
+      return
+    return
+
+  ###*
+  # Create the connection between the two Peers.
+  #
+  # Sets up callbacks that handle any events related to the
+  # connection and data received on it.
+  ###
+
+  join = ->
+    # Close old connection
+    if conn
+      conn.close()
+    # Create connection to destination peer specified in the input field
+    conn = peer.connect(recvIdInput.value, reliable: true)
+    conn.on 'open', ->
+      status.innerHTML = 'Connected to: ' + conn.peer
+      console.log 'Connected to: ' + conn.peer
+      # Check URL params for comamnds that should be sent immediately
+      command = getUrlParam('command')
+      if command
+        conn.send command
+      return
+    # Handle incoming data (messages only since this is the signal sender)
+    conn.on 'data', (data) ->
+      addMessage '<span class="peerMsg">Peer:</span> ' + data
+      return
+    conn.on 'close', ->
+      status.innerHTML = 'Connection closed'
+      return
+    return
+
+  ###*
+  # Get first "GET style" parameter from href.
+  # This enables delivering an initial command upon page load.
+  #
+  # Would have been easier to use location.hash.
+  ###
+
+  getUrlParam = (name) ->
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]')
+    regexS = '[\\?&]' + name + '=([^&#]*)'
+    regex = new RegExp(regexS)
+    results = regex.exec(window.location.href)
+    if results == null
+      null
+    else
+      results[1]
+
+  ###*
+  # Send a signal via the peer connection and add it to the log.
+  # This will only occur if the connection is still alive.
+  ###
+
+  signal = (sigName) ->
+    if conn and conn.open
+      conn.send sigName
+      console.log sigName + ' signal sent'
+      addMessage cueString + sigName
+    else
+      console.log 'Connection is closed'
+    return
+
+  addMessage = (msg) ->
+    now = new Date
+    h = now.getHours()
+    m = addZero(now.getMinutes())
+    s = addZero(now.getSeconds())
+
+    addZero = (t) ->
+      if t < 10
+        t = '0' + t
+      t
+
+    if h > 12
+      h -= 12
+    else if h == 0
+      h = 12
+    message.innerHTML = '<br><span class="msg-time">' + h + ':' + m + ':' + s + '</span>  -  ' + msg + message.innerHTML
+    return
+
+  clearMessages = ->
+    message.innerHTML = ''
+    addMessage 'Msgs cleared'
+    return
+
+  goButton.addEventListener 'click', ->
+    signal 'Go'
+    return
+  resetButton.addEventListener 'click', ->
+    signal 'Reset'
+    return
+  fadeButton.addEventListener 'click', ->
+    signal 'Fade'
+    return
+  offButton.addEventListener 'click', ->
+    signal 'Off'
+    return
+  # Listen for enter in message box
+  sendMessageBox.addEventListener 'keypress', (e) ->
+    event = e or window.event
+    char = event.which or event.keyCode
+    if char == '13'
+      sendButton.click()
+    return
+  # Send message
+  sendButton.addEventListener 'click', ->
+    if conn and conn.open
+      msg = sendMessageBox.value
+      sendMessageBox.value = ''
+      conn.send msg
+      console.log 'Sent: ' + msg
+      addMessage '<span class="selfMsg">Self: </span> ' + msg
+    else
+      console.log 'Connection is closed'
+    return
+  # Clear messages box
+  clearMsgsButton.addEventListener 'click', clearMessages
+  # Start peer connection on click
+  connectButton.addEventListener 'click', join
+  # Since all our callbacks are setup, start the process of obtaining an ID
+  initialize()
+  return
+
+# ---
+# generated by js2coffee 2.2.0
