@@ -1,15 +1,26 @@
-pswdUsrnmToSecretKey = (pswd, usrnm) ->
-  # Takes a password and username string and returns a secretKey
-  pswdHash = window.hasher(pswd)
-  slt = window.hasher(usrnm)
-  bcrypt.hash(pswdHash, slt, 12)
-
 window.signin = ->
+  window.getTime().then((t) ->
+    console.log("Loaded Sign In page at time: " + t)
+    return
+  )
   form = document.querySelector("#signInForm")
   usernameInput = document.querySelector("#usernameField")
   passwordInput = document.querySelector("#passwordField")
-  window.getTime().then((t) ->
-    console.log("signin.coffee under construction at time " + t)
+  sessionInput = document.querySelector("#sessionField")
+  signinFromForm = (e) ->
+    # prevent normal submission behavior that refreshes page
+    e.preventDefault()
+    usrnm = usernameInput.value
+    usernameInput.value = ''
+    pswd = passwordInput.value
+    passwordInput.value = ''
+    sesh = sessionInput.value
+    sessionInput.value = ''
+    keyPair = window.pswdUsrnmToKeyPair(pswd, usrnm)
+    pub = nacl.util.encodeBase64(keyPair.publicKey)
+    priv = nacl.util.encodeBase64(keyPair.secretKey)
+    localStorage.setItem("account", [pub, priv, sesh].join(","))
+    window.runPage("list")
     return
-  )
+  form.onsubmit = signinFromForm
   return

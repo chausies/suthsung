@@ -40,13 +40,20 @@ sha = (uint8arr) ->
 
 window.SALT = sha(strToUint("suthsung"))
 
-window.hasher = (str, salts=null) ->
-  if Array.isArray(salts)
-    return hasher(xor(hasher(str, salts[1..]), hasher(salts[0])))
-  if not salts
-    uint8arr = strToUint(str)
-    return sha(xor(sha(uint8arr), window.SALT))
-  return hasher(xor(hasher(str), hasher(salts)))
+window.hasher = (strs) ->
+  # Hashes an array of strs, or a single str
+  if Array.isArray(strs)
+    return hasher(xor(hasher(strs[1..]), hasher(salts[0])))
+  uint8arr = strToUint(strs)
+  return sha(xor(sha(uint8arr), window.SALT))
+
+window.pswdUsrnmToKeyPair = (pswd, usrnm) ->
+  # Takes a password and username string and returns a secretKey
+  pswdHash = window.hasher(pswd)
+  slt = window.hasher(usrnm)
+  b = bcrypt.hash(pswdHash, slt, 12)
+  seed = xor(pswdHash, Uint8Array.from(b))
+  return nacl.sign.keyPair.fromSeed(seed)
 
 window.getParam = (key) ->
   u = new URL(window.location.href)
@@ -76,7 +83,7 @@ window.goToPage = ->
   # Go to correct page specified by url params
   goTo = "signin"
   loc = window.getParam("loc")
-  if not localStorage.getItem("secretKey")
+  if not localStorage.getItem("account")
     goTo = "signin"
   else if not loc
     goTo = "list"
