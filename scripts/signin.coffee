@@ -16,10 +16,8 @@ window.signin = ->
     passwordInput.value = ''
     sesh = sessionInput.value.toLowerCase()
     sessionInput.value = ''
-    keyPair = window.pswdUsrnmToKeyPair(pswd, usrnm)
-    pub = nacl.util.encodeBase64(keyPair.publicKey)
-    priv = nacl.util.encodeBase64(keyPair.secretKey)
-    localStorage.setItem("account", [pub, priv, sesh].join(","))
+    secretID = window.pswdUsrnmToHash(pswd, usrnm)
+    localStorage.setItem("account", [secretID, sesh].join(","))
     window.runPage("list")
     return
   form.onsubmit = signinFromForm

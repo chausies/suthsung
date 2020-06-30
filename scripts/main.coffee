@@ -47,13 +47,13 @@ window.hasher = (strs) ->
   uint8arr = strToUint(strs)
   return sha(xor(sha(uint8arr), window.SALT))
 
-window.pswdUsrnmToKeyPair = (pswd, usrnm) ->
+window.pswdUsrnmToHash = (pswd, usrnm) ->
   # Takes a password and username string and returns a secretKey
   pswdHash = window.hasher(pswd)
   slt = window.hasher(usrnm)
   b = bcrypt.hash(pswdHash, slt, 12)
   seed = xor(pswdHash, Uint8Array.from(b))
-  return nacl.sign.keyPair.fromSeed(seed)
+  return nacl.util.encodeBase64(seed)
 
 window.getParam = (key) ->
   u = new URL(window.location.href)
