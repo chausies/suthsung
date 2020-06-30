@@ -38,13 +38,16 @@ The `META` file will be a dictionary with the following keys/values.
 * `room_name`: Name of the room, in this case "Pianists".
 * `room_image`: The hash of the cover image for this room.
 * `room_id`: Randomly generated id used to identify this room.
-* `admin_list`: Set containing the `(public_key, session_ids)`s 
+* `admin_list`: Set containing the `(public_key, nickname, session_ids)`s 
     for admins (who are allowed to invite/remove people, etc.). In this
-    case, the set starts out as `{(public_key_Alice, session_ids_Alice)}`,
-    where `session_ids_Alice` is a list of the different `session_id`'s for
-    Alice's different sessions (e.g. running on her different devices).
-* `guest_list`: Set contianing the `(public_key, session_ids)`s for guests 
-    in the `room` (who are allowed to participate). Starts empty.
+    case, the set starts out as `{(public_key_Alice, "Alice",
+    session_ids_Alice)}`, where `session_ids_Alice` is a list of the
+    different `session_id`'s for Alice's different sessions (e.g. running
+    on her different devices), and `"Alice"` is the preferred nickname
+    she'd like to be known by in the room.
+* `guest_list`: Set contianing the `(public_key, nickname, session_ids)`s 
+    for guests in the `room` (who are allowed to participate). Starts
+    empty.
 * `last_seen_list`: Dictionary containing entries 
     `{ (public_key, session_id): (stamp, sign) }` for each member of the
     `room`.  Here, `stamp` is the Unix timestamp of when you think that
@@ -77,15 +80,6 @@ in it.
 ## Communication
 
 Communication is done on a PeerJS channel with a chosen `peerjs_id`.
-
-If Alice wants to invite Bob to a room (in which she is allowed to), she
-has two options.
-* Randomly generate a 5-character `pin`. Alice communicates this `pin` to 
-    Bob by other means (preferably, in person), and then they both go to
-    the channel `peerjs_id = HASH(pin)`, where Alice can offer her invite.
-* If Alice is already on a channel with Bob (because of another room 
-    they're together in), then she could simply send him the invite there.
-More particulars on the invite are below in the **Sync Request** section.
 
 Communication in `room`s is very decentralized. When in a room together,
 Alice and Bob will very selectively communicate (see below in the
@@ -156,6 +150,21 @@ commands.
 At least once per a minute, Alice will initiate a sync with each of her
 neighbors on the network.
 
+## Inviting Someone to a Room
+
+If Alice wants to invite Bob to a room (in which she is allowed to), she
+goes through the following steps.
+* Randomly generate a 6-character `pin`. 
+* Alice communicates this `pin` to Bob by other means (preferably, in 
+    person), and then they both go to the temporary channel `peerjs_id =
+    HASH(pin)`.
+* Alice sends Bob `(INVITE, room_id)`
+* When Bob receives this, he sends Alice his `(INVITE_ACCEPT, public_key, 
+    nickname, session_id)`.
+* To her `logs` for the room, Alice adds the appropriate `ADD_GUEST` 
+    command (see below). Alice also treats Bob as a neighbor for 5 minutes.
+* Bob initiates a sync request with Alice.
+
 ## Syncing Last Seen List and Other Miscellania
 
 At least once a minute, send her `last_seen_list` to all her neighbors. She
@@ -177,24 +186,35 @@ sign)` to her neighbors.
 The following is a list of types of `event`s (which are recorded in the
 the `logs`).
 
-* `(POST_MESSAGE, id, msg, sig)`: Corresponds to person with ID `id` 
-    posting text message `msg`. `sig` is a digital signature verifying the
-    person sent that message.
-* `(POST_FILE, id, file_hash, file_name, sig)`: Corresponds to person with 
-    ID `id` posting a file with hash `file_hash` and suggested file name
-    `file_name`. `sig` is the digital signature verifying the person did
-    this. If you don't have a file of that hash stored, you must request it
-    from the `room`.
-* `(ADD_GUEST, id, new_id, sig)`: Corresponds to an admin with ID `id` 
-    telling the room to add a guest with the ID `new_id` to the
-    `guest_list`. The `ADD_ADMIN` event looks/works similarly.
-* `(ADD_SESSION, id, session_id, sig)`: Corresponds to anyone with ID `id` 
-    saying to add another one of their sessions with ID `session_id`. `sig`
-    is the digital signature verifying the person did this.
-* `(PROMOTE_GUEST, id, guest_id, sig)`: Corresponds to an admin with ID 
-    `id` suggesting to promote guest with ID `guest_id` to an admin. `sig`
-    is the digital signature verifying the admin requests this.
+* `(POST_MESSAGE, public_key, msg, sig)`: Corresponds to person with public 
+    key `public_key` posting text message `msg`. `sig` is a digital
+    signature verifying the person sent that message.
+* `(POST_FILE, public_key, file_hash, file_name, sig)`: Corresponds to 
+    person with public key `public_key` posting a file with hash
+    `file_hash` and suggested file name `file_name`. `sig` is the digital
+    signature verifying the person did this. If you don't have a file of
+    that hash stored, you must request it from the `room`.
+* `(ADD_GUEST, public_key, new_public_key, nickname, sig)`: Corresponds to 
+    an admin with public key `public_key` telling the room to add a guest
+    with the pubic key `new_public_key` and nickname `nickname` to the
+    `guest_list`.
+* `(ADD_SESSION, public_key, session_id, sig)`: Corresponds to anyone with 
+    public key `public_key` saying to add another one of their sessions
+    with ID `session_id`. `sig` is the digital signature verifying the
+    person did this.
+* `(PROMOTE_GUEST, public_key, guest_public_key, sig)`: Corresponds to an 
+    admin with public key `public_key` suggesting to promote guest with
+    public key `guest_public_key` to an admin. `sig` is the digital
+    signature verifying the admin requests this.
 * `(DEMOTE_ADMIN, id, admin_id, sig)`: Similar to the above.
+* `(ROOM_IMAGE, public_key, file_hash, file_name, sig)`: Similar to 
+    `POST_FILE`, but specifies the file should be set as the `room_image`.
+* `(ROOM_NAME, public_key, new_room_name, sig)`: Corresponds to a member 
+    with public key `public_key` requesting to change the `room_name` to
+    `new_room_name`.
+* `(CHANGE_NICKNAME, public_key, new_nickname, sig)`: Corresponds to a 
+    member with public key `public_key` requesting to change their nickname
+    to `new_nickname`.
 
 ## Request a File
 
