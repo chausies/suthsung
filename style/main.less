@@ -1,13 +1,26 @@
 @import (inline) "milligram.min.css";
+@darkest: #17191c;
+@darker: #232629;
+@dark: #2c2f34;
+@lightest: #f2f2f2;
+@lighter: #d6d9dc;
+@light: #9fa6ad;
 
-html, body {
-  background: #2c2f34;
-  color: #f2f2f2;
+html {
+  background: @dark;
   margin: 0;
 }
 
-input {
-  color: #f2f2f2;
+body {
+  margin: 0;
+}
+
+#mainContent {
+  margin: 8px;
+}
+
+body * {
+  color: @lightest;
 }
 
 ul.simpleList {
@@ -16,11 +29,24 @@ ul.simpleList {
 }
 
 #roomList li {
-  border: 2px solid #dedede;
+  border: 2px solid @darker;
+  display: block;
   /* background-color: #f1f1f1; */
   border-radius: 5px;
   padding: 10px;
-  margin: 10px 0;
+  // margin: -5px -8px;
+  // cursor: pointer;
+  overflow: hidden;
+}
+
+.add {
+  position: absolute;
+  right: 28px;
+  bottom: 23px;
+  font-size: 1.4rem;
+  height: 4.5rem;
+  line-height: 4.5rem;
+  padding: 0 2rem;
 }
 
 .scrollable {
@@ -28,11 +54,11 @@ ul.simpleList {
 }
 
 nav {
-  background-color: #17191c;
-  /* margin-bottom: 0px; */
+  background-color: @darkest;
+  margin-bottom: 0px;
   /* position: fixed; */
   width: 100%;
-  z-index: 3;
+  z-index: 2;
   font-size: 2em;
   overflow: hidden;
 }
@@ -53,40 +79,34 @@ nav * {
   text-decoration: none;
 }
 
+.roomTime {
+  float: right;
+  .roomMessage();
+}
+
 .navTitle {
   float: left;
 }
 
-/* .navigation .title, */
-/* .navigation-title { */
-/*   color: #f2f2f2; */
-/* } */
-/*  */
-/* .navigation { */
-/*   background: #34373c; */
-/*   border-bottom: 0.1rem solid #1b1c1d; */
-/* } */
-/*  */
-/* .header { */
-/*   background-color: #141518; */
-/* } */
-/*  */
-/* pre { */
-/*   background: #141518; */
-/* } */
-/*  */
-/* .prettyprint { */
-/*   color: #f2f2f2; */
-/* } */
-/*  */
-/* .prettyprint.lang-md * { */
-/*   color: #f2f2f2 !important; */
-/* } */
-/*  */
-/* code { */
-/*   background: #141518; */
-/* } */
-/*  */
-/* .prettyprint .atv { */
-/*   color: rgba(73, 158, 223, 1); */
-/* } */
+h3 {
+  margin-bottom: 0px;
+  font-weight: 700;
+}
+
+img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+.roomMessage {
+  color: @light;
+}
+
+.speaker {
+  color: @lighter;
+  font-weight: bold;
+  display: inline;
+}
