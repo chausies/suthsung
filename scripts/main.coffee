@@ -72,7 +72,7 @@ for pageName in ["signin", "list", "room", "settings"]
 
 window.runPage = (pageName, arg) ->
   window.setParams({loc: pageName})
-  document.getElementById("body").innerHTML = await window.pages[pageName]
+  document.getElementById("mainContent").innerHTML = await window.pages[pageName]
   switch pageName
     when "signin" then window.signin()
     when "settings" then window.settings()
@@ -88,7 +88,7 @@ window.goToPage = ->
     goTo = "signin"
   else if not loc
     goTo = "list"
-  else if loc of ["signin", "settings", "room", "list"]
+  else if loc in ["signin", "settings", "room", "list"]
     goTo = loc
   else
     goTo = "list"

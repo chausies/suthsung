@@ -3,6 +3,8 @@ window.signin = ->
     console.log("Loaded Sign In page at time: " + t)
     return
   )
+  nav = document.querySelector("nav")
+  nav.style.display = 'none'
   form = document.querySelector("#signInForm")
   usernameInput = document.querySelector("#usernameField")
   passwordInput = document.querySelector("#passwordField")
