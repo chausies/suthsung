@@ -39,14 +39,23 @@ ul.simpleList {
   overflow: hidden;
 }
 
-.add {
+.floatBtn {
   position: absolute;
-  right: 28px;
   bottom: 23px;
   font-size: 1.4rem;
   height: 4.5rem;
   line-height: 4.5rem;
   padding: 0 2rem;
+}
+
+.rightBtn {
+  .floatBtn();
+  right: 28px;
+}
+
+.leftBtn {
+  .floatBtn();
+  left: 28px;
 }
 
 .scrollable {

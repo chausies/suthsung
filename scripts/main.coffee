@@ -65,8 +65,10 @@ window.setParams = (dict) ->
     u.searchParams.set(k, v)
   window.history.pushState(null, null, u.href)
 
+pageNames = ["signin", "list", "room", "newRoom", "joinRoom", "settings"]
+
 window.pages = {}
-for pageName in ["signin", "list", "room", "settings"]
+for pageName in pageNames
   window.pages[pageName] = fetch('/html/' + pageName + '.html')
     .then((resp) -> return resp.text())
 
@@ -76,6 +78,8 @@ window.runPage = (pageName, arg) ->
   switch pageName
     when "signin" then window.signin()
     when "settings" then window.settings()
+    when "newRoom" then window.newRoom()
+    when "joinRoom" then window.joinRoom()
     when "room" then window.room(arg)
     else
       window.list()
@@ -88,7 +92,7 @@ window.goToPage = ->
     goTo = "signin"
   else if not loc
     goTo = "list"
-  else if loc in ["signin", "settings", "room", "list"]
+  else if loc in pageNames
     goTo = loc
   else
     goTo = "list"
