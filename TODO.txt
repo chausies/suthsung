@@ -1,5 +1,6 @@
+> Finish basic html layout for everything
 > Get barebones syncing of text running via Peer.js and IndexedDB.
 > Get support for different filetypes.
-> Give a sexy-ass material design UI.
+> Make message field expand automatically in chat room
 > Add feature to interact with user microphone or camera to send 
     audio/video messages

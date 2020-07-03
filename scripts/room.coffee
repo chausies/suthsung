@@ -3,4 +3,5 @@ window.room = (roomId) ->
     console.log("room.coffee under construction at time " + t)
     return
   )
+  window.scrollTo(0, document.body.scrollHeight)
   return

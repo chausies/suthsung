@@ -5,6 +5,7 @@
 @lightest: #f2f2f2;
 @lighter: #d6d9dc;
 @light: #9fa6ad;
+@darkblue: #282f5f;
 
 html {
   background: @dark;
@@ -28,15 +29,66 @@ ul.simpleList {
   list-style-type: none;
 }
 
-#roomList li {
-  border: 2px solid @darker;
+div.roomContainer {
+  float: left;
   display: block;
-  /* background-color: #f1f1f1; */
+  position: relative;
+  background-color: @darker;
   border-radius: 5px;
   padding: 10px;
+  margin: 2px;
   // margin: -5px -8px;
   // cursor: pointer;
   overflow: hidden;
+  width: 100%;//calc(100% - 8em);
+}
+
+span.fillContainer {
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  z-index:2;
+}
+
+a.roomContainer {
+  float: left;
+  display: block;
+  background-color: @darker;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 2px;
+  // margin: -5px -8px;
+  // cursor: pointer;
+  overflow: hidden;
+  width: 100%;//calc(100% - 8em);
+  text-decoration: none;
+}
+
+div.fullMessage {
+  float: left;
+  border: 2px solid @darker;
+  display: block;
+  background-color: @darker;
+  border-radius: 5px;
+  padding: 10px;
+  // margin: -5px -8px;
+  margin-bottom: 8px;
+  // cursor: pointer;
+  overflow: hidden;
+  width: calc(100% - 8em);
+}
+
+.fullMessageWrapper {
+  clear: both;
+}
+
+div.right div.fullMessage {
+  float: right;
+  border: 2px solid @darkblue;
+  background-color: @darkblue;
+  width: calc(100% - 8em);
 }
 
 .floatBtn {
@@ -62,10 +114,28 @@ ul.simpleList {
   overflow-y: auto;
 }
 
+#sendBtn, #fileBtn {
+  float: right;
+  width: 1.8em;
+  padding: 0;
+  margin: 0px 2px;
+  font-size: 2.5rem;
+  border-radius: 50%;
+}
+
+#sendBtn{
+  margin-right: 5px;
+}
+
+#messageField {
+  background-color: @darkest;
+  width: calc(100% - 8em);
+}
+
 nav {
   background-color: @darkest;
-  margin-bottom: 0px;
-  /* position: fixed; */
+  top: 0;
+  position: fixed;
   width: 100%;
   z-index: 2;
   font-size: 2em;
@@ -76,7 +146,26 @@ nav * {
   padding: 0px 12px;
 }
 
-/* Style navigation menu links */
+div.topMargin {
+  margin-bottom: 4em;
+}
+
+div.bottomMargin {
+  float: left;
+  margin-top: 4em;
+}
+
+div.sendBar {
+  position: fixed;
+  background-color: @darker;
+  padding: 8px;
+  padding-bottom: 0px;
+  width: 100%;
+  bottom: 0;
+  margin-bottom: -4px;
+  z-index: 2;
+  right: 0;
+}
 
 #hamburger {
   float: left;
@@ -90,11 +179,31 @@ nav * {
 
 .roomTime {
   float: right;
-  .roomMessage();
+  color: @light;
+}
+
+.messageTime {
+  float: right;
+  color: @light;
+}
+
+div.right .messageTime {
+  float: left;
+  color: @light;
 }
 
 .navTitle {
   float: left;
+}
+
+div.messageWrapper {
+  float:left;
+  display:inline;
+}
+
+div.right div.messageWrapper {
+  float:right;
+  display:inline;
 }
 
 h3 {
@@ -102,16 +211,49 @@ h3 {
   font-weight: 700;
 }
 
-img {
+h4 {
+  margin-bottom: 0px;
+}
+
+.roomContainer img {
   float: left;
+  position: relative;
   max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+  z-index: 3;
+}
+
+img.avatar {
+  float: left;
+  max-width: 40px;
+  border: 2px solid @darker;
   width: 100%;
   margin-right: 20px;
   border-radius: 50%;
 }
 
+div.myRow {
+  clear: both;
+}
+
+div.right img.avatar {
+  float: right;
+  margin-left: 20px;
+  margin-right: 0;
+}
+
 .roomMessage {
   color: @light;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 50vw;
+}
+
+.message {
+  color: @lightest;
 }
 
 .speaker {

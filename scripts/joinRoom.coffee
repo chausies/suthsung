@@ -3,7 +3,7 @@ window.joinRoom = ->
     console.log("Loaded Join Room page at time: " + t)
     return
   )
-  nav = document.querySelector("nav")
+  nav = document.querySelector("#navBar")
   nav.style.display = 'none'
   [secretID, usrnm, sesh] = localStorage.getItem("account").split(",")
   form = document.querySelector("#joinRoomForm")
@@ -22,7 +22,7 @@ window.joinRoom = ->
     nickname.value = ''
     peerjsChannelId = 'a' + nacl.util.encodeBase64(window.hasher(tempKey)) + 'a'
     alert("UNDER CONSTRUCTION")
-    # window.runPage("list")
+    # window.goToPage({loc: "room", id: "placeholder"})
     return
   form.onsubmit = joinRoomFromForm
   return

@@ -59,12 +59,6 @@ window.getParam = (key) ->
   u = new URL(window.location.href)
   return u.searchParams.get(key)
 
-window.setParams = (dict) ->
-  u = new URL(window.location.href)
-  for k, v of dict
-    u.searchParams.set(k, v)
-  window.history.pushState(null, null, u.href)
-
 pageNames = ["signin", "list", "room", "newRoom", "joinRoom", "settings"]
 
 window.pages = {}
@@ -73,7 +67,6 @@ for pageName in pageNames
     .then((resp) -> return resp.text())
 
 window.runPage = (pageName, arg) ->
-  window.setParams({loc: pageName})
   document.getElementById("mainContent").innerHTML = await window.pages[pageName]
   switch pageName
     when "signin" then window.signin()
@@ -84,19 +77,26 @@ window.runPage = (pageName, arg) ->
     else
       window.list()
 
-
-window.goToPage = ->
-  # Go to correct page specified by url params
-  loc = window.getParam("loc")
-  if not localStorage.getItem("account")
-    goTo = "signin"
-  else if not loc
-    goTo = "list"
-  else if loc in pageNames
-    goTo = loc
+window.goToPage = (dict) ->
+  if !dict
+    loc = window.getParam("loc")
+    # Go to correct page specified by url params
+    if not localStorage.getItem("account")
+      window.goToPage({loc: "signin"})
+      return
+    else if (not loc) or (not (loc in pageNames))
+      window.goToPage({loc: "list"})
+      return
   else
-    goTo = "list"
-  window.runPage(goTo)
+    loc = dict.loc
+    u = new URL(window.location.href)
+    for k, v of dict
+      u.searchParams.set(k, v)
+    window.location.href = u.href
+  arg = null
+  if loc in ["room"]
+    arg = window.getParam("id")
+  window.runPage(loc, arg)
 
 window.onload = ->
   window.goToPage()

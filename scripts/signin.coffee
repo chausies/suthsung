@@ -3,7 +3,7 @@ window.signin = ->
     console.log("Loaded Sign In page at time: " + t)
     return
   )
-  nav = document.querySelector("nav")
+  nav = document.querySelector("#navBar")
   nav.style.display = 'none'
   form = document.querySelector("#signInForm")
   usernameInput = document.querySelector("#usernameField")
@@ -21,7 +21,7 @@ window.signin = ->
     sessionInput.value = ''
     secretID = window.pswdUsrnmToHash(pswd, usrnm)
     localStorage.setItem("account", [secretID, usrnm, sesh].join(","))
-    window.runPage("list")
+    window.goToPage({loc: "list"})
     return
   form.onsubmit = signinFromForm
   return
