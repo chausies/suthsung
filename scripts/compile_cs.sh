@@ -5,6 +5,7 @@ if [ -f suthsung.min.js ]; then
 fi
 coffee -c *.coffee
 uglifyjs main.js *.js -cmo temp.js
+# cat *.js >> temp.js
 mv temp.js temp
 rm *.js
 mv temp suthsung.min.js
