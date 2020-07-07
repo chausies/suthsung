@@ -110,5 +110,5 @@ window.goToPage = (dict) ->
     return
 
 window.onload = ->
-  window.goToPage()
+  await window.goToPage()
   return
