@@ -17,6 +17,13 @@ window.getTime().then((t) ->
   console.log("Current Real Unix Time is: " + t)
 )
 
+window.getStamp = ->
+  # reverse string
+  uniqueTag = Math.floor(Math.random()*100000).toString()[0..4]
+  st = (await window.getTime()).toString()
+  return '0'.repeat(20-st.length) + st + uniqueTag
+
+
 strToUint = (str) ->
   return new TextEncoder('utf-8').encode(str)
 
@@ -69,13 +76,13 @@ for pageName in pageNames
 window.runPage = (pageName, arg) ->
   document.getElementById("mainContent").innerHTML = await window.pages[pageName]
   switch pageName
-    when "signin" then window.signin()
-    when "settings" then window.settings()
-    when "newRoom" then window.newRoom()
-    when "joinRoom" then window.joinRoom()
-    when "room" then window.room(arg)
+    when "signin" then await window.signin()
+    when "settings" then await window.settings()
+    when "newRoom" then await window.newRoom()
+    when "joinRoom" then await window.joinRoom()
+    when "room" then await window.room(arg)
     else
-      window.list()
+      await window.list()
 
 window.goToPage = (dict) ->
   if !dict
@@ -87,16 +94,17 @@ window.goToPage = (dict) ->
     else if (not loc) or (not (loc in pageNames))
       window.goToPage({loc: "list"})
       return
+    else
+      arg = null
+      if loc in ["room"]
+        arg = window.getParam("id")
+      await window.runPage(loc, arg)
   else
     loc = dict.loc
     u = new URL(window.location.href)
     for k, v of dict
       u.searchParams.set(k, v)
     window.location.href = u.href
-  arg = null
-  if loc in ["room"]
-    arg = window.getParam("id")
-  window.runPage(loc, arg)
 
 window.onload = ->
-  window.goToPage()
+  await window.goToPage()
