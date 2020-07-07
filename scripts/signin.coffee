@@ -12,15 +12,14 @@ window.signin = ->
   signinFromForm = (e) ->
     # prevent normal submission behavior that refreshes page
     e.preventDefault()
-    # Commas are removed from username
-    usrnm = usernameInput.value.toLowerCase().replaceAll(",", "")
+    usrnm = usernameInput.value.toLowerCase()
     usernameInput.value = ''
     pswd = passwordInput.value
     passwordInput.value = ''
     sesh = sessionInput.value.toLowerCase()
     sessionInput.value = ''
-    secretID = window.pswdUsrnmToHash(pswd, usrnm)
-    localStorage.setItem("account", [secretID, usrnm, sesh].join(","))
+    secretId = window.pswdUsrnmToHash(pswd, usrnm)
+    localforage.setItem("account", {secretId: secretId, username: usrnm, sessionName: sesh})
     window.goToPage({loc: "list"})
     return
   form.onsubmit = signinFromForm
