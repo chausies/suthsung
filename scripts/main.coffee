@@ -88,7 +88,7 @@ window.runPage = (pageName, arg) ->
 window.goToPage = (dict) ->
   if !dict
     loc = window.getParam("loc")
-    if false # (loc!="signin") and (not localStorage.getItem("account"))
+    if (loc!="signin") and (not localforage.getItem("account"))
       window.goToPage({loc: "signin"})
       return
     else if (not loc) or (not (loc in pageNames))
