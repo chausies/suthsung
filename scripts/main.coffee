@@ -83,12 +83,13 @@ window.runPage = (pageName, arg) ->
     when "room" then await window.room(arg)
     else
       await window.list()
+  return
 
 window.goToPage = (dict) ->
   if !dict
     loc = window.getParam("loc")
     # Go to correct page specified by url params
-    if not localStorage.getItem("account")
+    if (loc!="signin") and (not localStorage.getItem("account"))
       window.goToPage({loc: "signin"})
       return
     else if (not loc) or (not (loc in pageNames))
@@ -99,12 +100,15 @@ window.goToPage = (dict) ->
       if loc in ["room"]
         arg = window.getParam("id")
       await window.runPage(loc, arg)
+      return
   else
     loc = dict.loc
     u = new URL(window.location.href)
     for k, v of dict
       u.searchParams.set(k, v)
     window.location.href = u.href
+    return
 
 window.onload = ->
-  await window.goToPage()
+  window.goToPage()
+  return
