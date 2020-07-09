@@ -13,10 +13,6 @@ window.getTime = ->
     window.clientTimeOffset = realTime - clientTime
   return window.lastTime = Math.round(clientTime + window.clientTimeOffset)
 
-window.getTime().then((t) ->
-  console.log("Current Real Unix Time is: " + t)
-)
-
 window.getStamp = ->
   # reverse string
   uniqueTag = Math.floor(Math.random()*100000).toString()[0..4]
@@ -68,46 +64,50 @@ window.getParam = (key) ->
 
 pageNames = ["signin", "list", "room", "newRoom", "joinRoom", "settings"]
 
-window.pages = {}
-for pageName in pageNames
-  window.pages[pageName] = fetch('/html/' + pageName + '.html')
-    .then((resp) -> return resp.text())
-
 window.runPage = (pageName, arg) ->
-  document.getElementById("mainContent").innerHTML = await window.pages[pageName]
-  switch pageName
-    when "signin" then await window.signin()
-    when "settings" then await window.settings()
-    when "newRoom" then await window.newRoom()
-    when "joinRoom" then await window.joinRoom()
-    when "room" then await window.room(arg)
-    else
-      await window.list()
-  return
+  console.log("starting fetch")
+  await return fetch('/html/' + pageName + '.html')
+  .then((resp) -> return resp.text())
+  .then((html) ->
+    document.getElementById("mainContent").innerHTML = html
+    switch pageName
+      when "signin" then return window.signin()
+      when "settings" then return window.settings()
+      when "newRoom" then return window.newRoom()
+      when "joinRoom" then return window.joinRoom()
+      when "room" then return window.room(arg)
+      else
+        return window.list()
+  )
 
 window.goToPage = (dict) ->
   if !dict
     loc = window.getParam("loc")
-    if (loc!="signin") and (not localforage.getItem("account"))
-      window.goToPage({loc: "signin"})
-      return
-    else if (not loc) or (not (loc in pageNames))
-      window.goToPage({loc: "list"})
-      return
-    else
-      arg = null
-      if loc in ["room"]
-        arg = window.getParam("id")
-      await window.runPage(loc, arg)
-      return
+    await return localforage.getItem("account")
+    .then( (acc) ->
+      if (loc!="signin") and (not acc)
+        return window.goToPage({loc: "signin"})
+      else if (not loc) or (not (loc in pageNames))
+        return window.goToPage({loc: "list"})
+      else
+        arg = null
+        if loc in ["room"]
+          arg = window.getParam("id")
+        return window.runPage(loc, arg)
+    )
   else
     loc = dict.loc
     u = new URL(window.location.href)
     for k, v of dict
       u.searchParams.set(k, v)
     window.location.href = u.href
-    return
+    await return
 
 window.onload = ->
-  await window.goToPage()
+  window.getTime().then((t) ->
+    console.log("Current Real Unix Time is: " + t)
+  ).then( () ->
+    window.goToPage()
+    return
+  )
   return

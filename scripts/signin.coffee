@@ -20,7 +20,10 @@ window.signin = ->
     sessionInput.value = ''
     secretId = window.pswdUsrnmToHash(pswd, usrnm)
     localforage.setItem("account", {secretId: secretId, username: usrnm, sessionName: sesh})
-    window.goToPage({loc: "list"})
+    .then(() ->
+      window.goToPage({loc: "list"})
+      return
+    )
     return
   form.onsubmit = signinFromForm
   return
